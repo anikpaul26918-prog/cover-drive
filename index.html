@@ -1,0 +1,101 @@
+<!doctype html>
+</div>
+
+
+<div class="video-wrap">
+<!-- Replace src with a local file path or a direct .mp4/.webm URL -->
+<video id="myVideo" preload="metadata" poster="" controls>
+<source src="virat kohli coverdrive.mp4.mp4" type="video/mp4">
+<source src="virat kohli coverdrive.mp4.mp4" type="video/webm">
+<!-- Fallback text -->
+আপনার ব্রাউজারটি ভিডিও ট্যাগ সাপোর্ট করে না।
+</video>
+
+
+<div class="overlay-play" id="overlay">
+<button id="overlayBtn" aria-label="Play">▶︎ Play</button>
+</div>
+</div>
+
+
+<div class="controls">
+<div class="native-controls">
+<button class="btn" id="playPause">Play</button>
+<input id="seek" type="range" min="0" max="100" value="0">
+<button class="btn" id="mute">Mute</button>
+<button class="btn" id="fs">Fullscreen</button>
+</div>
+</div>
+
+
+<div class="caption">Supported formats: .mp4, .webm (use an H.264 mp4 for best browser support). To play a local file, put the video file next to this HTML and update the <code>src</code> value (or drag the file into the browser window).</div>
+</div>
+
+
+<script>
+const video = document.getElementById('myVideo');
+const overlay = document.getElementById('overlay');
+const overlayBtn = document.getElementById('overlayBtn');
+const playPause = document.getElementById('playPause');
+const seek = document.getElementById('seek');
+const mute = document.getElementById('mute');
+const fs = document.getElementById('fs');
+
+
+// overlay play
+overlayBtn.addEventListener('click', ()=>{ video.play(); overlay.style.display='none'; });
+
+
+// sync play/pause button
+video.addEventListener('play', ()=> playPause.textContent = 'Pause');
+video.addEventListener('pause', ()=> playPause.textContent = 'Play');
+
+
+playPause.addEventListener('click', ()=>{
+if(video.paused) video.play(); else video.pause();
+});
+
+
+// seek bar
+video.addEventListener('timeupdate', ()=>{
+if(video.duration) seek.value = (video.currentTime / video.duration) * 100;
+});
+seek.addEventListener('input', ()=>{
+if(video.duration) video.currentTime = (seek.value / 100) * video.duration;
+});
+
+
+// mute toggle
+mute.addEventListener('click', ()=>{
+video.muted = !video.muted; mute.textContent = video.muted ? 'Unmute' : 'Mute';
+});
+
+
+// fullscreen
+fs.addEventListener('click', ()=>{
+if(document.fullscreenElement) document.exitFullscreen(); else video.requestFullscreen();
+});
+
+
+// hide overlay when user clicks video controls (desktop)
+video.addEventListener('click', ()=>{
+if(video.paused) overlay.style.display='flex'; else overlay.style.display='none';
+});
+
+
+// If user supplies drag-and-drop file, support quick preview
+document.addEventListener('dragover', e=>{ e.preventDefault(); });
+document.addEventListener('drop', e=>{
+e.preventDefault();
+const dt = e.dataTransfer;
+if(dt && dt.files && dt.files.length){
+const file = dt.files[0];
+const url = URL.createObjectURL(file);
+video.src = url;
+video.load();
+overlay.style.display='none';
+}
+});
+</script>
+</body>
+</html>
